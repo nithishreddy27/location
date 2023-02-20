@@ -4,19 +4,17 @@ function Compass() {
   const [heading, setHeading] = useState(0);
 
   useEffect(() => {
-    if (window.DeviceOrientationEvent) {
-      window.addEventListener('deviceorientation', handleOrientation, true);
-    }
+    const degree_update_rate = 3;
+
+    CompassHeading.start(degree_update_rate, ({heading, accuracy}) => {
+      console.log('CompassHeading: ', heading, accuracy);
+      setHeading(heading)
+    });
+
     return () => {
-      window.removeEventListener('deviceorientation', handleOrientation, true);
+      CompassHeading.stop();
     };
   }, []);
-
-  const handleOrientation = (event) => {
-    const { webkitCompassHeading, alpha } = event;
-    const newHeading = webkitCompassHeading || alpha;
-    setHeading(newHeading);
-  };
 
   return (
     <div>
